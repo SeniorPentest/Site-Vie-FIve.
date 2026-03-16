@@ -2,9 +2,9 @@
 // Navigation
 // ===========================
 
-const header = document.getElementById('header');
+const header    = document.getElementById('header');
 const hamburger = document.getElementById('hamburger');
-const navLinks = document.getElementById('nav-links');
+const navLinks  = document.getElementById('nav-links');
 const navAnchors = navLinks ? navLinks.querySelectorAll('a') : [];
 
 // Sticky header on scroll
@@ -37,18 +37,32 @@ navAnchors.forEach(link => {
 });
 
 // ===========================
+// Dropdown keyboard support
+// ===========================
+
+document.querySelectorAll('.has-dropdown > a').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+        if (window.innerWidth <= 700) {
+            e.preventDefault();
+            const parent = trigger.parentElement;
+            parent.classList.toggle('open');
+        }
+    });
+});
+
+// ===========================
 // Active Nav Link Highlight
 // ===========================
 
 function updateActiveNavLink() {
     const sections = document.querySelectorAll('section[id]');
-    let scrollPos = window.scrollY + 100;
+    const scrollPos = window.scrollY + 100;
 
     sections.forEach(section => {
-        const top = section.offsetTop;
+        const top    = section.offsetTop;
         const height = section.offsetHeight;
-        const id = section.getAttribute('id');
-        const link = navLinks ? navLinks.querySelector(`a[href="#${id}"]`) : null;
+        const id     = section.getAttribute('id');
+        const link   = navLinks ? navLinks.querySelector(`a[href="#${id}"]`) : null;
 
         if (link) {
             if (scrollPos >= top && scrollPos < top + height) {
@@ -66,7 +80,7 @@ function updateActiveNavLink() {
 
 function revealOnScroll() {
     const revealElements = document.querySelectorAll('.reveal');
-    const windowHeight = window.innerHeight;
+    const windowHeight   = window.innerHeight;
 
     revealElements.forEach(el => {
         const top = el.getBoundingClientRect().top;
@@ -76,33 +90,23 @@ function revealOnScroll() {
     });
 }
 
-// Add reveal class to target elements
-function initReveal() {
-    const targets = document.querySelectorAll(
-        '.about-grid, .portfolio-card, .contact-wrapper, .section-header'
-    );
-    targets.forEach(el => el.classList.add('reveal'));
-    revealOnScroll();
-}
-
 // ===========================
 // Contact Form
 // ===========================
 
 const contactForm = document.getElementById('contact-form');
-const formStatus = document.getElementById('form-status');
+const formStatus  = document.getElementById('form-status');
 
 if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const name = contactForm.name.value.trim();
-        const email = contactForm.email.value.trim();
+        const name    = contactForm.name.value.trim();
+        const email   = contactForm.email.value.trim();
         const message = contactForm.message.value.trim();
 
-        // Basic validation
         if (!name || !email || !message) {
-            setFormStatus('Por favor, preencha todos os campos.', 'error');
+            setFormStatus('Por favor, preencha todos os campos obrigatórios.', 'error');
             return;
         }
 
@@ -111,16 +115,16 @@ if (contactForm) {
             return;
         }
 
-        // Simulate form submission
         const submitBtn = contactForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
+        const submitSpan = submitBtn ? submitBtn.querySelector('span') : null;
+        if (submitBtn) submitBtn.disabled = true;
+        if (submitSpan) submitSpan.textContent = 'Enviando...';
 
         setTimeout(() => {
-            setFormStatus('Mensagem enviada com sucesso! Em breve entrarei em contato. ✉', 'success');
+            setFormStatus('Mensagem enviada com sucesso! Em breve entraremos em contato. ✉', 'success');
             contactForm.reset();
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Enviar Mensagem';
+            if (submitBtn) submitBtn.disabled = false;
+            if (submitSpan) submitSpan.textContent = 'Enviar Mensagem';
         }, 1200);
     });
 }
@@ -134,7 +138,6 @@ function setFormStatus(msg, type) {
     formStatus.textContent = msg;
     formStatus.className = 'form-status ' + type;
 
-    // Clear after 5 seconds
     setTimeout(() => {
         formStatus.textContent = '';
         formStatus.className = 'form-status';
@@ -146,6 +149,19 @@ function setFormStatus(msg, type) {
 // ===========================
 
 document.addEventListener('DOMContentLoaded', () => {
-    initReveal();
+    // Add reveal class to cards and sections
+    const targets = document.querySelectorAll(
+        '.snack-card, .value-card, .program-card, .plan-card, ' +
+        '.channel-card, .loyalty-text, .loyalty-visual, ' +
+        '.compliance-text, .compliance-seals, ' +
+        '.contact-info, .contact-form, .section-header'
+    );
+    targets.forEach(el => {
+        if (!el.classList.contains('reveal')) {
+            el.classList.add('reveal');
+        }
+    });
+
+    revealOnScroll();
     updateActiveNavLink();
 });
