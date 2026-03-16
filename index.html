@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -16,7 +16,7 @@
     <header id="header">
         <nav class="navbar">
             <div class="nav-logo">
-                <a href="#hero">ME</a>
+                <a href="#hero"><span class="logo-dot"></span>ME</a>
             </div>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#hero">Início</a></li>
@@ -34,23 +34,61 @@
 
     <!-- Hero Section -->
     <section id="hero" class="hero">
-        <div class="hero-content">
-            <span class="hero-tag">Olá, eu sou</span>
-            <h1 class="hero-title">Maria Eduarda</h1>
-            <p class="hero-subtitle">Criativa &bull; Apaixonada &bull; Determinada</p>
-            <p class="hero-description">
-                Bem-vindo(a) ao meu espaço pessoal. Aqui você encontra um pouco de quem eu sou,
-                o que faço e o que me inspira.
-            </p>
-            <div class="hero-buttons">
-                <a href="#portfolio" class="btn btn-primary">Ver Portfólio</a>
-                <a href="#contact" class="btn btn-outline">Fale Comigo</a>
+        <div class="hero-inner">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    Disponível para novos projetos
+                </div>
+                <h1 class="hero-title">
+                    Olá, sou<br>
+                    <span class="hero-name">Maria Eduarda</span>
+                </h1>
+                <p class="hero-subtitle">Criativa &bull; Apaixonada &bull; Determinada</p>
+                <p class="hero-description">
+                    Bem-vindo(a) ao meu espaço pessoal. Aqui você encontra um pouco de quem eu sou,
+                    o que faço e o que me inspira.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#portfolio" class="btn btn-primary">
+                        <span>Ver Portfólio</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#contact" class="btn btn-outline">Fale Comigo</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <strong>3+</strong>
+                        <span>Anos de experiência</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <strong>20+</strong>
+                        <span>Projetos concluídos</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <strong>10+</strong>
+                        <span>Clientes satisfeitos</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="avatar-ring">
+                    <div class="avatar-inner">
+                        <span class="avatar-initials">ME</span>
+                    </div>
+                    <div class="ring ring-1"></div>
+                    <div class="ring ring-2"></div>
+                </div>
+                <div class="floating-chip chip-1">✦ Design</div>
+                <div class="floating-chip chip-2">❋ Arte</div>
+                <div class="floating-chip chip-3">✧ Criação</div>
             </div>
         </div>
-        <div class="hero-decoration">
-            <div class="circle circle-1"></div>
-            <div class="circle circle-2"></div>
-            <div class="circle circle-3"></div>
+        <div class="hero-scroll-hint">
+            <span>Rolar</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </div>
     </section>
 
@@ -60,14 +98,22 @@
             <div class="section-header">
                 <span class="section-tag">Quem sou eu</span>
                 <h2>Sobre Mim</h2>
+                <p class="section-desc">Conheça um pouco mais sobre minha trajetória e paixões.</p>
             </div>
             <div class="about-grid">
-                <div class="about-image">
-                    <div class="image-placeholder">
+                <div class="about-card about-card-main">
+                    <div class="about-avatar">
                         <span>ME</span>
                     </div>
+                    <h3>Maria Eduarda</h3>
+                    <p class="about-role">Criadora &amp; Designer</p>
+                    <div class="about-badges">
+                        <span class="badge">🇧🇷 Brasil</span>
+                        <span class="badge">✉ Disponível</span>
+                    </div>
                 </div>
-                <div class="about-text">
+                <div class="about-card about-card-bio">
+                    <h3>Minha história</h3>
                     <p>
                         Sou Maria Eduarda, uma pessoa apaixonada por criatividade, aprendizado e conexões genuínas.
                         Acredito que cada projeto é uma oportunidade de deixar uma marca positiva no mundo.
@@ -84,6 +130,14 @@
                         <span class="skill-tag">Trabalho em equipe</span>
                     </div>
                 </div>
+                <div class="about-card about-card-stat">
+                    <div class="big-number">20+</div>
+                    <p>Projetos realizados com dedicação e criatividade.</p>
+                </div>
+                <div class="about-card about-card-quote">
+                    <span class="quote-mark">"</span>
+                    <p>Cada detalhe importa. A beleza está na combinação perfeita de arte e intenção.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -94,39 +148,67 @@
             <div class="section-header">
                 <span class="section-tag">Meus trabalhos</span>
                 <h2>Portfólio</h2>
+                <p class="section-desc">Projetos que refletem minha visão criativa e dedicação.</p>
             </div>
             <div class="portfolio-grid">
-                <div class="portfolio-card" data-category="design">
+                <div class="portfolio-card featured" data-category="design">
                     <div class="portfolio-card-img">
                         <div class="card-placeholder card-placeholder-1">✦</div>
+                        <div class="card-overlay">
+                            <a href="#" class="overlay-btn">Ver projeto</a>
+                        </div>
                     </div>
                     <div class="portfolio-card-body">
-                        <span class="card-tag">Design</span>
+                        <div class="card-meta">
+                            <span class="card-tag">Design</span>
+                            <span class="card-year">2025</span>
+                        </div>
                         <h3>Projeto 1</h3>
                         <p>Uma criação especial que combina estética e funcionalidade de forma harmoniosa.</p>
-                        <a href="#" class="card-link">Ver mais →</a>
+                        <a href="#" class="card-link">
+                            Ver mais
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
                     </div>
                 </div>
                 <div class="portfolio-card" data-category="photo">
                     <div class="portfolio-card-img">
                         <div class="card-placeholder card-placeholder-2">✧</div>
+                        <div class="card-overlay">
+                            <a href="#" class="overlay-btn">Ver projeto</a>
+                        </div>
                     </div>
                     <div class="portfolio-card-body">
-                        <span class="card-tag">Fotografia</span>
+                        <div class="card-meta">
+                            <span class="card-tag">Fotografia</span>
+                            <span class="card-year">2025</span>
+                        </div>
                         <h3>Projeto 2</h3>
                         <p>Capturas que contam histórias e revelam a beleza nos detalhes do cotidiano.</p>
-                        <a href="#" class="card-link">Ver mais →</a>
+                        <a href="#" class="card-link">
+                            Ver mais
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
                     </div>
                 </div>
                 <div class="portfolio-card" data-category="art">
                     <div class="portfolio-card-img">
                         <div class="card-placeholder card-placeholder-3">❋</div>
+                        <div class="card-overlay">
+                            <a href="#" class="overlay-btn">Ver projeto</a>
+                        </div>
                     </div>
                     <div class="portfolio-card-body">
-                        <span class="card-tag">Arte</span>
+                        <div class="card-meta">
+                            <span class="card-tag">Arte</span>
+                            <span class="card-year">2024</span>
+                        </div>
                         <h3>Projeto 3</h3>
                         <p>Expressão artística que traduz emoções em formas e cores vibrantes.</p>
-                        <a href="#" class="card-link">Ver mais →</a>
+                        <a href="#" class="card-link">
+                            Ver mais
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -139,26 +221,37 @@
             <div class="section-header">
                 <span class="section-tag">Vamos conversar</span>
                 <h2>Entre em Contato</h2>
+                <p class="section-desc">Adoraria conhecer você e seus projetos.</p>
             </div>
             <div class="contact-wrapper">
                 <div class="contact-info">
-                    <p>Adoraria ouvir sobre você e seus projetos. Entre em contato e vamos criar algo incrível juntos!</p>
+                    <p>Tenho interesse em novos projetos, colaborações e conversas criativas. Minha caixa de entrada está sempre aberta!</p>
                     <ul class="contact-list">
                         <li>
-                            <span class="contact-icon">✉</span>
-                            <a href="mailto:mariaeduarda@email.com">mariaeduarda@email.com</a>
+                            <div class="contact-icon-wrap">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div>
+                                <span class="contact-label">E-mail</span>
+                                <a href="mailto:mariaeduarda@email.com">mariaeduarda@email.com</a>
+                            </div>
                         </li>
                         <li>
-                            <span class="contact-icon">📍</span>
-                            <span>Brasil</span>
+                            <div class="contact-icon-wrap">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div>
+                                <span class="contact-label">Localização</span>
+                                <span>Brasil</span>
+                            </div>
                         </li>
                     </ul>
                     <div class="social-links">
                         <a href="#" class="social-link" aria-label="Instagram">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                         </a>
                         <a href="#" class="social-link" aria-label="LinkedIn">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                         </a>
                     </div>
                 </div>
@@ -175,7 +268,10 @@
                         <label for="message">Mensagem</label>
                         <textarea id="message" name="message" rows="5" placeholder="Escreva sua mensagem..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">Enviar Mensagem</button>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span>Enviar Mensagem</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </button>
                     <p class="form-status" id="form-status"></p>
                 </form>
             </div>
@@ -184,8 +280,17 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
+        <div class="container footer-inner">
+            <div class="footer-logo">ME</div>
             <p>&copy; 2026 Maria Eduarda. Todos os direitos reservados.</p>
+            <div class="footer-social">
+                <a href="#" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+                <a href="#" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+            </div>
         </div>
     </footer>
 
