@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberStreet – Streetwear do Futuro</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Orbitron (display) + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- React + ReactDOM via CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel standalone (JSX transform) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Lucide icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <script>
+    /* ── Tailwind custom config ── */
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg:      '#050505',
+              card:    '#0d0d0d',
+              neon:    '#00f0ff',
+              neonAlt: '#39ff14',
+              border:  '#1a1a2e',
+              muted:   '#6b7280',
+            }
+          },
+          fontFamily: {
+            display: ['Orbitron', 'sans-serif'],
+            body:    ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            neon:     '0 0 12px #00f0ff, 0 0 30px rgba(0,240,255,.35)',
+            neonSm:   '0 0 6px #00f0ff, 0 0 14px rgba(0,240,255,.25)',
+            neonGreen:'0 0 12px #39ff14, 0 0 30px rgba(57,255,20,.35)',
+          },
+          backdropBlur: {
+            glass: '14px',
+          },
+          keyframes: {
+            flicker: {
+              '0%,100%': { opacity: '1' },
+              '50%':     { opacity: '0.7' },
+            },
+            slideUp: {
+              '0%':   { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            scanline: {
+              '0%':   { backgroundPosition: '0 0' },
+              '100%': { backgroundPosition: '0 100%' },
+            }
+          },
+          animation: {
+            flicker:  'flicker 3s ease-in-out infinite',
+            slideUp:  'slideUp .7s ease forwards',
+            scanline: 'scanline 8s linear infinite',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Global resets & scrollbar */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background-color: #050505; font-family: 'Inter', sans-serif; color: #fff; overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 3px; }
+
+    /* Glassmorphism card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0, 240, 255, 0.18);
+      border-radius: 12px;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 22px rgba(0, 240, 255, .35), 0 0 6px rgba(0, 240, 255, .15);
+      border-color: rgba(0, 240, 255, 0.55);
+    }
+
+    /* Neon glow button */
+    .btn-neon {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 36px;
+      background: transparent;
+      border: 1.5px solid #00f0ff;
+      border-radius: 4px;
+      color: #00f0ff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .25s ease, box-shadow .25s ease, color .25s ease;
+      overflow: hidden;
+    }
+    .btn-neon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,240,255,.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+    .btn-neon:hover {
+      background: rgba(0, 240, 255, .1);
+      box-shadow: 0 0 18px #00f0ff, 0 0 40px rgba(0,240,255,.35);
+      color: #fff;
+    }
+    .btn-neon:hover::before { opacity: 1; }
+
+    /* Scanline hero overlay */
+    .scanlines {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,.08) 3px,
+        rgba(0,0,0,.08) 4px
+      );
+      z-index: 1;
+    }
+
+    /* Noise texture overlay */
+    .noise::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      opacity: .5;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glitch effect on logo */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      font-family: inherit;
+      font-weight: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+    .glitch::before {
+      color: #39ff14;
+      clip-path: polygon(0 20%, 100% 20%, 100% 35%, 0 35%);
+      transform: translateX(-2px);
+      animation: glitch-1 3s infinite linear alternate-reverse;
+    }
+    .glitch::after {
+      color: #ff003c;
+      clip-path: polygon(0 65%, 100% 65%, 100% 75%, 0 75%);
+      transform: translateX(2px);
+      animation: glitch-2 3s infinite linear alternate-reverse;
+    }
+    @keyframes glitch-1 {
+      0%,90%,100% { transform: translateX(-2px); opacity: 0; }
+      91%          { opacity: 1; transform: translateX(-3px); }
+      93%          { transform: translateX(2px); }
+      95%          { transform: translateX(-2px); opacity: 0; }
+    }
+    @keyframes glitch-2 {
+      0%,88%,100% { transform: translateX(2px); opacity: 0; }
+      89%          { opacity: 1; transform: translateX(3px); }
+      92%          { transform: translateX(-2px); }
+      94%          { transform: translateX(2px); opacity: 0; }
+    }
+
+    /* Nav link underline effect */
+    .nav-link {
+      position: relative;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+      transition: color .2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: #00f0ff;
+      box-shadow: 0 0 6px #00f0ff;
+      transition: width .25s ease;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link.active { color: #00f0ff; }
+    .nav-link.active::after { width: 100%; }
+
+    /* Icon button */
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      color: rgba(255,255,255,.65);
+      transition: color .2s ease, background .2s ease;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+    .icon-btn:hover {
+      color: #00f0ff;
+      background: rgba(0,240,255,.08);
+    }
+
+    /* Hero title */
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.01em;
+    }
+
+    /* Badge tag */
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(0, 240, 255, .08);
+      border: 1px solid rgba(0, 240, 255, .3);
+      border-radius: 2px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .15em;
+      color: #00f0ff;
+      text-transform: uppercase;
+    }
+
+    /* Product image placeholder */
+    .product-img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+      transition: transform .4s ease;
+    }
+    .glass-card:hover .product-img { transform: scale(1.04); }
+
+    /* Section title divider */
+    .section-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .section-line::before,
+    .section-line::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(0,240,255,.35));
+    }
+    .section-line::after {
+      background: linear-gradient(to left, transparent, rgba(0,240,255,.35));
+    }
+
+    /* Footer neon separator */
+    .footer-sep {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #00f0ff, transparent);
+      opacity: .3;
+    }
+
+    /* Mobile nav */
+    .mobile-nav {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+    }
+    .mobile-nav.open { max-height: 400px; }
+
+    /* Animated entrance */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    /* ── Lucide icon helper (loaded from CDN window.lucide) ── */
+    function Icon({ name, size = 18, className = '' }) {
+      const elRef = useRef(null);
+      useEffect(() => {
+        if (elRef.current && window.lucide) {
+          elRef.current.innerHTML = '';
+          const svg = window.lucide.createElement(name);
+          if (svg) {
+            svg.setAttribute('width', size);
+            svg.setAttribute('height', size);
+            svg.setAttribute('stroke-width', '1.5');
+            elRef.current.appendChild(svg);
+          }
+        }
+      }, [name, size]);
+      return <span ref={elRef} className={`inline-flex ${className}`} />;
+    }
+
+    /* ── Intersection-Observer hook for fade-up ── */
+    function useFadeUp() {
+      useEffect(() => {
+        const els = document.querySelectorAll('.fade-up');
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+          { threshold: 0.15 }
+        );
+        els.forEach(el => io.observe(el));
+        return () => io.disconnect();
+      }, []);
+    }
+
+    /* ── Product data ── */
+    const PRODUCTS = [
+      {
+        id: 1,
+        name: 'Neural Hoodie',
+        tag: 'DROP 01',
+        price: 'R$ 349',
+        color: '#00f0ff',
+        img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80',
+        badge: 'NEW',
+      },
+      {
+        id: 2,
+        name: 'Cargo Tactical',
+        tag: 'DROP 01',
+        price: 'R$ 289',
+        color: '#39ff14',
+        img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80',
+        badge: 'HOT',
+      },
+      {
+        id: 3,
+        name: 'Cyber Vest X9',
+        tag: 'DROP 02',
+        price: 'R$ 219',
+        color: '#00f0ff',
+        img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80',
+        badge: null,
+      },
+      {
+        id: 4,
+        name: 'Grid Jacket',
+        tag: 'DROP 02',
+        price: 'R$ 479',
+        color: '#ff003c',
+        img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80',
+        badge: 'LIMITED',
+      },
+    ];
+
+    /* ─────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────── */
+    function Navbar() {
+      const [scrolled, setScrolled] = useState(false);
+      const [menuOpen, setMenuOpen] = useState(false);
+      const [active, setActive] = useState('Home');
+
+      useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', onScroll);
+        return () => window.removeEventListener('scroll', onScroll);
+      }, []);
+
+      const links = ['Home', 'Shop', 'Drop', 'About'];
+
+      return (
+        <header
+          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+            scrolled
+              ? 'bg-black/80 backdrop-blur-[14px] border-b border-[#00f0ff]/10 py-3'
+              : 'bg-transparent py-5'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+
+              {/* Logo */}
+              <a href="#hero" className="flex items-center gap-2">
+                <span
+                  className="glitch hero-title text-xl tracking-widest text-white"
+                  data-text="CYBER"
+                  style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: 900 }}
+                >
+                  CYBER
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'Orbitron, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '1.15rem',
+                    letterSpacing: '.25em',
+                    color: '#00f0ff',
+                    textShadow: '0 0 8px #00f0ff',
+                  }}
+                >
+                  STREET
+                </span>
+              </a>
+
+              {/* Desktop nav links */}
+              <nav className="hidden md:flex items-center gap-8">
+                {links.map(link => (
+                  <button
+                    key={link}
+                    className={`nav-link ${active === link ? 'active' : ''}`}
+                    onClick={() => setActive(link)}
+                  >
+                    {link}
+                  </button>
+                ))}
+              </nav>
+
+              {/* Right icons */}
+              <div className="hidden md:flex items-center gap-2">
+                <button className="icon-btn" aria-label="Busca">
+                  <Icon name="search" size={18} />
+                </button>
+                <button className="icon-btn" aria-label="Carrinho">
+                  <Icon name="shopping-bag" size={18} />
+                </button>
+                <button className="btn-neon text-xs px-5 py-2.5">
+                  Join Drop
+                </button>
+              </div>
+
+              {/* Hamburger (mobile) */}
+              <button
+                className="icon-btn md:hidden"
+                aria-label="Menu"
+                onClick={() => setMenuOpen(v => !v)}
+              >
+                <Icon name={menuOpen ? 'x' : 'menu'} size={20} />
+              </button>
+            </div>
+
+            {/* Mobile menu */}
+            <div className={`mobile-nav md:hidden ${menuOpen ? 'open' : ''}`}>
+              <nav className="flex flex-col gap-1 pt-4 pb-2 border-t border-[#00f0ff]/10 mt-4">
+                {links.map(link => (
+                  <button
+                    key={link}
+                    className={`nav-link text-left py-3 px-1 ${active === link ? 'active' : ''}`}
+                    onClick={() => { setActive(link); setMenuOpen(false); }}
+                  >
+                    {link}
+                  </button>
+                ))}
+                <div className="flex items-center gap-3 pt-4">
+                  <button className="icon-btn"><Icon name="search" size={18} /></button>
+                  <button className="icon-btn"><Icon name="shopping-bag" size={18} /></button>
+                  <button className="btn-neon ml-auto text-xs px-4 py-2">Join Drop</button>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       HERO SECTION
+    ───────────────────────────────────── */
+    function Hero() {
+      return (
+        <section
+          id="hero"
+          className="noise relative min-h-screen flex items-center justify-center overflow-hidden"
+          style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,240,255,.12) 0%, #050505 60%)' }}
+        >
+          {/* Scanlines */}
+          <div className="scanlines" />
+
+          {/* Grid BG */}
+          <div
+            className="absolute inset-0 z-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(0,240,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,1) 1px, transparent 1px)',
+              backgroundSize: '60px 60px',
+            }}
+          />
+
+          {/* Glow orbs */}
+          <div
+            className="absolute top-1/4 -left-24 w-72 h-72 rounded-full opacity-20 blur-[100px]"
+            style={{ background: '#00f0ff' }}
+          />
+          <div
+            className="absolute bottom-1/4 -right-24 w-72 h-72 rounded-full opacity-15 blur-[100px]"
+            style={{ background: '#39ff14' }}
+          />
+
+          {/* Content */}
+          <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
+            {/* Badge */}
+            <div className="flex justify-center mb-8">
+              <span className="tag-badge animate-flicker">
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '6px',
+                    height: '6px',
+                    borderRadius: '50%',
+                    background: '#00f0ff',
+                    boxShadow: '0 0 8px #00f0ff',
+                  }}
+                />
+                SS 2025 — COLLECTION LIVE
+              </span>
+            </div>
+
+            {/* Main title */}
+            <h1
+              className="hero-title text-white mb-6"
+              style={{
+                fontSize: 'clamp(2.8rem, 9vw, 7.5rem)',
+                textShadow: '0 0 40px rgba(0,240,255,.15)',
+              }}
+            >
+              WEAR THE{' '}
+              <span
+                style={{
+                  color: '#00f0ff',
+                  textShadow: '0 0 16px #00f0ff, 0 0 48px rgba(0,240,255,.6)',
+                }}
+              >
+                FUTURE
+              </span>
+            </h1>
+
+            {/* Subtitle */}
+            <p
+              className="text-gray-400 mb-10 max-w-xl mx-auto"
+              style={{ fontFamily: 'Inter, sans-serif', fontSize: 'clamp(1rem, 2vw, 1.2rem)', lineHeight: 1.7 }}
+            >
+              Streetwear forjado na escuridão digital. Cada peça é um manifesto — para quem vive além das fronteiras.
+            </p>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button className="btn-neon">
+                <Icon name="shopping-bag" size={16} />
+                Shop Now
+              </button>
+              <button
+                className="inline-flex items-center gap-2 px-8 py-3.5 text-gray-400 hover:text-white transition-colors"
+                style={{
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontSize: '.8rem',
+                  letterSpacing: '.1em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <Icon name="play-circle" size={16} />
+                Ver Lookbook
+              </button>
+            </div>
+
+            {/* Stats row */}
+            <div className="mt-20 grid grid-cols-3 gap-4 max-w-lg mx-auto">
+              {[
+                { val: '12K+', label: 'Drops vendidos' },
+                { val: '4',    label: 'Coleções' },
+                { val: '100%', label: 'Handcrafted' },
+              ].map(s => (
+                <div key={s.val} className="text-center">
+                  <div
+                    style={{
+                      fontFamily: 'Orbitron, sans-serif',
+                      fontWeight: 700,
+                      fontSize: '1.4rem',
+                      color: '#00f0ff',
+                      textShadow: '0 0 10px rgba(0,240,255,.5)',
+                    }}
+                  >
+                    {s.val}
+                  </div>
+                  <div style={{ fontSize: '.7rem', color: '#6b7280', letterSpacing: '.08em', textTransform: 'uppercase', marginTop: 4 }}>
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+            <span style={{ fontSize: '.65rem', fontFamily: 'Orbitron', letterSpacing: '.15em', color: '#6b7280' }}>SCROLL</span>
+            <div className="w-px h-10 bg-gradient-to-b from-[#00f0ff] to-transparent" />
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       PRODUCT CARD
+    ───────────────────────────────────── */
+    function ProductCard({ product }) {
+      const [wished, setWished] = useState(false);
+
+      return (
+        <article className="glass-card overflow-hidden fade-up group">
+          {/* Image */}
+          <div className="relative overflow-hidden" style={{ borderRadius: '12px 12px 0 0' }}>
+            <img
+              src={product.img}
+              alt={product.name}
+              className="product-img"
+              loading="lazy"
+            />
+            {/* Image overlay */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+              style={{ background: 'rgba(0,0,0,.45)' }}
+            >
+              <button className="btn-neon text-xs px-5 py-2">
+                Quick Add
+              </button>
+            </div>
+            {/* Badge */}
+            {product.badge && (
+              <span
+                className="absolute top-3 left-3 px-2 py-1 text-xs font-semibold rounded"
+                style={{
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontSize: '.6rem',
+                  letterSpacing: '.1em',
+                  background: product.color,
+                  color: '#050505',
+                }}
+              >
+                {product.badge}
+              </span>
+            )}
+            {/* Wish list */}
+            <button
+              className="absolute top-3 right-3 icon-btn"
+              style={{
+                background: 'rgba(5,5,5,.6)',
+                backdropFilter: 'blur(8px)',
+                color: wished ? '#ff003c' : 'rgba(255,255,255,.5)',
+              }}
+              onClick={() => setWished(v => !v)}
+              aria-label="Favoritar"
+            >
+              <Icon name="heart" size={15} />
+            </button>
+          </div>
+
+          {/* Info */}
+          <div className="p-4">
+            <div
+              className="text-xs mb-1"
+              style={{ fontFamily: 'Orbitron', letterSpacing: '.1em', color: product.color, opacity: .8 }}
+            >
+              {product.tag}
+            </div>
+            <h3
+              className="text-white font-semibold mb-3 leading-snug"
+              style={{ fontFamily: 'Orbitron', fontSize: '.95rem' }}
+            >
+              {product.name}
+            </h3>
+            <div className="flex items-center justify-between">
+              <span
+                className="text-white font-bold"
+                style={{
+                  fontFamily: 'Orbitron',
+                  fontSize: '1.05rem',
+                  textShadow: `0 0 8px ${product.color}`,
+                  color: product.color,
+                }}
+              >
+                {product.price}
+              </span>
+              <button
+                className="icon-btn"
+                style={{ background: `rgba(0,240,255,.08)`, color: '#00f0ff' }}
+                aria-label="Adicionar ao carrinho"
+              >
+                <Icon name="plus" size={16} />
+              </button>
+            </div>
+          </div>
+        </article>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       PRODUCT GRID SECTION
+    ───────────────────────────────────── */
+    function ProductGrid() {
+      return (
+        <section id="shop" className="py-24 px-4 sm:px-6 max-w-7xl mx-auto">
+          {/* Section header */}
+          <div className="text-center mb-16 fade-up">
+            <span className="tag-badge mb-4 inline-flex">
+              <Icon name="zap" size={11} />
+              DROP 01 — SS 2025
+            </span>
+            <h2
+              className="text-white mt-4 mb-3"
+              style={{ fontFamily: 'Orbitron', fontWeight: 700, fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-.01em' }}
+            >
+              LATEST{' '}
+              <span style={{ color: '#00f0ff', textShadow: '0 0 12px rgba(0,240,255,.6)' }}>DROPS</span>
+            </h2>
+            <p className="text-gray-500 max-w-sm mx-auto" style={{ fontSize: '.9rem' }}>
+              Peças em edição limitada. Quando acabar, acabou.
+            </p>
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {PRODUCTS.map((p, i) => (
+              <div key={p.id} style={{ transitionDelay: `${i * 80}ms` }}>
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="text-center mt-12 fade-up">
+            <button className="btn-neon">
+              <Icon name="grid" size={15} />
+              Ver coleção completa
+            </button>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       MARQUEE STRIP
+    ───────────────────────────────────── */
+    function MarqueeStrip() {
+      const items = ['TECHWEAR', 'CYBERPUNK', 'STREETWEAR', 'LIMITED DROPS', 'URBAN FUTURE', 'NEURAL FABRIC'];
+      return (
+        <div
+          className="py-4 overflow-hidden border-y"
+          style={{ borderColor: 'rgba(0,240,255,.12)', background: 'rgba(0,240,255,.03)' }}
+        >
+          <div
+            className="flex gap-12 whitespace-nowrap"
+            style={{ animation: 'marquee 18s linear infinite' }}
+          >
+            {[...items, ...items].map((item, i) => (
+              <span
+                key={i}
+                className="shrink-0 flex items-center gap-3"
+                style={{ fontFamily: 'Orbitron', fontSize: '.7rem', letterSpacing: '.2em', color: 'rgba(255,255,255,.3)' }}
+              >
+                <span style={{ color: '#00f0ff', opacity: .5 }}>◆</span>
+                {item}
+              </span>
+            ))}
+          </div>
+          <style>{`
+            @keyframes marquee {
+              from { transform: translateX(0); }
+              to   { transform: translateX(-50%); }
+            }
+          `}</style>
+        </div>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       ABOUT / MANIFESTO SECTION
+    ───────────────────────────────────── */
+    function Manifesto() {
+      return (
+        <section
+          id="about"
+          className="py-24 px-4 sm:px-6 relative overflow-hidden"
+          style={{
+            background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(0,240,255,.07) 0%, transparent 70%)',
+          }}
+        >
+          <div className="max-w-4xl mx-auto text-center fade-up">
+            <span className="tag-badge mb-6 inline-flex">
+              <Icon name="cpu" size={11} />
+              MANIFESTO
+            </span>
+            <h2
+              className="text-white my-6"
+              style={{
+                fontFamily: 'Orbitron',
+                fontWeight: 900,
+                fontSize: 'clamp(2rem, 5vw, 4rem)',
+                lineHeight: 1.1,
+              }}
+            >
+              NÃO É MODA.
+              <br />
+              <span style={{ color: '#00f0ff', textShadow: '0 0 20px rgba(0,240,255,.5)' }}>
+                É CÓDIGO.
+              </span>
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto" style={{ lineHeight: 1.9, fontSize: '1rem' }}>
+              CyberStreet nasceu na interseção entre a rua e o futuro. Cada costura é um algoritmo.
+              Cada peça é um protocolo. Nós não seguimos tendências — nós executamos versões.
+            </p>
+
+            {/* Feature pills */}
+            <div className="flex flex-wrap justify-center gap-3 mt-10">
+              {[
+                { icon: 'shield', text: 'Material Premium' },
+                { icon: 'recycle', text: 'Produção Consciente' },
+                { icon: 'package', text: 'Envio Rápido' },
+                { icon: 'star', text: 'Edição Limitada' },
+              ].map(f => (
+                <div
+                  key={f.text}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm text-gray-300"
+                  style={{
+                    background: 'rgba(255,255,255,.04)',
+                    border: '1px solid rgba(255,255,255,.1)',
+                    fontFamily: 'Inter',
+                  }}
+                >
+                  <Icon name={f.icon} size={14} className="text-[#00f0ff]" style={{ color: '#00f0ff' }} />
+                  {f.text}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────── */
+    function Footer() {
+      return (
+        <footer
+          className="pt-16 pb-8 px-4 sm:px-6 relative"
+          style={{ borderTop: '1px solid rgba(0,240,255,.1)' }}
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+              {/* Brand */}
+              <div className="md:col-span-1">
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span style={{ fontFamily: 'Orbitron', fontWeight: 900, fontSize: '1.1rem', color: '#fff' }}>CYBER</span>
+                  <span style={{ fontFamily: 'Orbitron', fontWeight: 400, fontSize: '1.1rem', color: '#00f0ff', textShadow: '0 0 8px #00f0ff', letterSpacing: '.2em' }}>STREET</span>
+                </div>
+                <p className="text-gray-600 text-sm" style={{ lineHeight: 1.8 }}>
+                  Streetwear para quem vive no futuro.
+                </p>
+                <div className="flex items-center gap-3 mt-5">
+                  {['instagram', 'twitter', 'youtube'].map(s => (
+                    <button key={s} className="icon-btn" style={{ border: '1px solid rgba(255,255,255,.1)' }}>
+                      <Icon name={s} size={15} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Links */}
+              {[
+                { title: 'SHOP', links: ['Hoodies', 'Pants', 'Vests', 'Jackets', 'Accessories'] },
+                { title: 'INFO',  links: ['Sobre Nós', 'Lookbook', 'Drops', 'Collab'] },
+                { title: 'HELP',  links: ['Tamanhos', 'Envios', 'Trocas', 'FAQ'] },
+              ].map(col => (
+                <div key={col.title}>
+                  <h4
+                    className="text-white mb-4"
+                    style={{ fontFamily: 'Orbitron', fontSize: '.7rem', letterSpacing: '.18em' }}
+                  >
+                    {col.title}
+                  </h4>
+                  <ul className="flex flex-col gap-2">
+                    {col.links.map(l => (
+                      <li key={l}>
+                        <a
+                          href="#"
+                          className="text-gray-600 hover:text-[#00f0ff] transition-colors text-sm"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {l}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="footer-sep mb-6" />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-gray-700 text-xs" style={{ fontFamily: 'Inter' }}>
+              <span>© 2025 CyberStreet. Todos os direitos reservados.</span>
+              <span style={{ fontFamily: 'Orbitron', letterSpacing: '.1em', color: 'rgba(0,240,255,.3)', fontSize: '.6rem' }}>
+                v2.5.0 — BUILD STABLE
+              </span>
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       APP
+    ───────────────────────────────────── */
+    function App() {
+      useFadeUp();
+      return (
+        <div style={{ background: '#050505', minHeight: '100vh' }}>
+          <Navbar />
+          <Hero />
+          <MarqueeStrip />
+          <ProductGrid />
+          <Manifesto />
+          <Footer />
+        </div>
+      );
+    }
+
+    /* ─────────────────────────────────────
+       RENDER
+    ───────────────────────────────────── */
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
