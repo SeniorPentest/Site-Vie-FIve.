@@ -9,11 +9,25 @@ const prevBtn = document.querySelector('.carousel-btn-prev');
 const nextBtn = document.querySelector('.carousel-btn-next');
 const dotsContainer = document.querySelector('.carousel-dots');
 
+function initSnackImageFallbacks() {
+    const images = document.querySelectorAll('.snack-card-img img[data-fallback]');
+    images.forEach(img => {
+        img.addEventListener('error', () => {
+            const fallback = img.dataset.fallback;
+            if (fallback) {
+                img.src = fallback;
+                img.removeAttribute('data-fallback');
+            }
+        }, { once: true });
+    });
+}
+
 function initCarousel() {
     if (!carousel || !carouselWrapper) return;
 
     const cards = carousel.querySelectorAll('.snack-card');
     const totalSlides = cards.length;
+    const mobileQuery = window.matchMedia('(max-width: 700px)');
 
     // Create dots
     if (dotsContainer) {
@@ -29,8 +43,7 @@ function initCarousel() {
 
     // Update carousel position
     function updateCarousel() {
-        const isMobile = window.innerWidth <= 700;
-        if (isMobile) {
+        if (mobileQuery.matches) {
             carousel.style.transform = 'none';
             if (prevBtn) prevBtn.disabled = true;
             if (nextBtn) nextBtn.disabled = true;
@@ -236,6 +249,7 @@ function setFormStatus(msg, type) {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize carousel
     initCarousel();
+    initSnackImageFallbacks();
 
     // Add reveal class to cards and sections
     const targets = document.querySelectorAll(
