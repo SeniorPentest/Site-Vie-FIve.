@@ -25,6 +25,8 @@ function initSnackImageFallbacks() {
 function initCarousel() {
     if (!carousel || !carouselWrapper) return;
 
+    carousel.classList.add('is-carousel');
+
     const cards = carousel.querySelectorAll('.snack-card');
     const totalSlides = cards.length;
     const carouselMobileBreakpoint = 700;

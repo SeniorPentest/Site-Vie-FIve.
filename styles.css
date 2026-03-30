@@ -593,9 +593,15 @@ select, input, textarea { font-family: inherit; }
 .snacks-carousel {
     display: flex;
     gap: 24px;
-    overflow: hidden;
+    overflow: visible;
     scroll-behavior: smooth;
     position: relative;
+    flex-wrap: wrap;
+}
+
+.snacks-carousel.is-carousel {
+    overflow: hidden;
+    flex-wrap: nowrap;
 }
 
 /* Carousel Buttons */
@@ -1497,7 +1503,8 @@ select, input, textarea { font-family: inherit; }
     .compliance-seals { grid-template-columns: 1fr 1fr; }
 
     .snacks-carousel-wrapper { padding: 0; }
-    .snacks-carousel {
+    .snacks-carousel,
+    .snacks-carousel.is-carousel {
         flex-wrap: wrap;
         overflow: visible;
     }
