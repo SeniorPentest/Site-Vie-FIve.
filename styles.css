@@ -770,8 +770,19 @@ select, input, textarea { font-family: inherit; }
     transform: translateY(-4px);
 }
 .value-icon {
-    font-size: 2.2rem;
     margin-bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.value-icon svg {
+    width: 56px;
+    height: 56px;
+    stroke: var(--red);
+    stroke-width: 2.25;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 .value-card h3 {
     font-size: .98rem;
