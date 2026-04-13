@@ -1,18 +1,23 @@
 // Função principal do Carrossel
-function initCarousel() {
-    const carousel = document.querySelector('.snacks-carousel');
-    const carouselWrapper = document.querySelector('.snacks-carousel-wrapper');
-    if (!carousel || !carouselWrapper) return;
+function initCarousel(containerSelector) {
+    const carouselWrapper = document.querySelector(containerSelector);
+    if (!carouselWrapper) return;
 
-    carousel.classList.add('is-carousel');
-    const cards = carousel.querySelectorAll('.snack-card');
+    const carousel = carouselWrapper.querySelector('.carousel-track') || carouselWrapper.querySelector('.snacks-carousel');
+    if (!carousel) return;
+
+    const cards = carousel.querySelectorAll('.snack-card, .plan-card, .value-card, .carousel-item');
     const totalSlides = cards.length;
-    const prevBtn = document.querySelector('.carousel-btn-prev');
-    const nextBtn = document.querySelector('.carousel-btn-next');
-    const dotsContainer = document.querySelector('.carousel-dots');
+    if (!totalSlides) return;
+
+    const prevBtn = carouselWrapper.querySelector('.carousel-btn-prev');
+    const nextBtn = carouselWrapper.querySelector('.carousel-btn-next');
+    const dotsContainer = carouselWrapper.querySelector('.carousel-dots');
 
     let currentSlide = 0; // Variável local para evitar conflitos
     let autoplayId = null;
+
+    carousel.classList.add('is-carousel');
 
     // 1. Criar pontos de navegação
     if (dotsContainer) {
@@ -26,8 +31,14 @@ function initCarousel() {
         }
     }
 
+    const getGap = () => {
+        const style = getComputedStyle(carousel);
+        const gapValue = style.columnGap || style.gap || '0';
+        return parseFloat(gapValue) || 0;
+    };
+
     const getCarouselMetrics = () => {
-        const cardWidth = cards[0].offsetWidth + 24; // Largura + Gap
+        const cardWidth = cards[0].offsetWidth + getGap(); // Largura + Gap
         const visibleCards = Math.max(1, Math.round(carouselWrapper.offsetWidth / cardWidth));
         const maxIndex = Math.max(0, totalSlides - visibleCards);
         return { cardWidth, maxIndex };
@@ -59,7 +70,8 @@ function initCarousel() {
     }
 
     function prevSlide() {
-        currentSlide = (currentSlide > 0) ? currentSlide - 1 : totalSlides - 1;
+        const { maxIndex } = getCarouselMetrics();
+        currentSlide = (currentSlide > 0) ? currentSlide - 1 : maxIndex;
         updateCarousel();
     }
 
@@ -88,7 +100,9 @@ function initCarousel() {
 
 // Inicialização Global
 document.addEventListener('DOMContentLoaded', () => {
-    initCarousel();
+    initCarousel('.snacks-carousel-wrapper');
+    initCarousel('.plans-wrapper');
+    initCarousel('.values-wrapper');
     // Fallback de imagens (mantido do original)
     document.querySelectorAll('.snack-card-img img[data-fallback]').forEach(img => {
         img.addEventListener('error', () => {
